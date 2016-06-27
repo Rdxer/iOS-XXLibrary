@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
                     这是一个依赖框架。
                    DESC
 
-  s.homepage     = "https://github.com/Rdxer/iOS-XXLibrary.git"
+  s.homepage     = "https://github.com/Rdxer/iOS_XXLibrary.git"
 
   s.license      = "MIT"
   s.author             = { "LXF" => "rdxer@foxmail.com" }
@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   # s.watchos.deployment_target = "2.0"
   # s.tvos.deployment_target = "9.0"
 
-  s.source       = { :git => "https://github.com/Rdxer/iOS-XXLibrary.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/Rdxer/iOS_XXLibrary.git", :tag => "#{s.version}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
