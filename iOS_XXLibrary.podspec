@@ -70,7 +70,7 @@ Pod::Spec.new do |s|
 
   # s.library   = "iconv"
   # s.libraries = "iconv", "xml2"
-
+  s.library   = "sqlite3.0"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   #
