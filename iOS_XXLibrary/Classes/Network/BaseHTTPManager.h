@@ -12,6 +12,7 @@
 #import "XXNetworkDelegate.h"
 #import "XXError.h"
 
+
 @interface BaseHTTPManager : AFURLSessionManager
 
 @property (nonatomic, strong, nullable) dispatch_queue_t completionCallBackQueue;

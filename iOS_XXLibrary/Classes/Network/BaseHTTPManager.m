@@ -12,6 +12,8 @@
 #import "NSDate+dateStamp.h"
 #import "XXError.h"
 
+#import "CustomLogTools.h"
+
 #import "XXJSONRequestSerializer.h"
 #import "XXJSONResponseSerializer.h"
 
@@ -178,6 +180,7 @@
     if(serializationError){
         if (failure) {
             dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                printE(@"<1>发送请求错误..%@",serializationError);
                 failure(nil, serializationError);
             });
         }
@@ -190,6 +193,7 @@
     if(serializationError){
         if (failure) {
             dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                printE(@"<2>发送请求错误..%@",serializationError);
                 failure(nil, serializationError);
             });
         }
@@ -208,6 +212,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wgnu"
             dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                printE(@"<3>发送请求错误..%@",serializationError);
                 failure(nil, serializationError);
             });
 #pragma clang diagnostic pop
@@ -224,6 +229,7 @@
                            if (error) {
                                if (failure) {
                                    dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                                        printE(@"<4>发送请求错误..%@",error);
                                         failure(dataTask, error);
                                    });
                                }
@@ -233,6 +239,7 @@
                                if (serializationError) {
                                    if (dataerr) {
                                        dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                                           printW(@"请求失败~..%@",serializationError);
                                            dataerr(dataTask, responseObject,serializationError);
                                        });
                                    }
