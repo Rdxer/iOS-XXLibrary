@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "STDbKit.h"
+#import <CustomLogTools.h>
 
 @interface XXBaseModel : STDbObject
 

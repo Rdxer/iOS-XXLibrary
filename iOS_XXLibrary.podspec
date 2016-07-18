@@ -39,7 +39,7 @@ Pod::Spec.new do |s|
   #  Not including the public_header_files will make all headers public.
   #
 
-  s.source_files  = "iOS_XXLibrary/Classes", "iOS_XXLibrary/Classes/**/*.{h,m}"
+  s.source_files  = "iOS_XXLibrary","iOS_XXLibrary/Classes", "iOS_XXLibrary/Classes/**/*.{h,m}"
   s.exclude_files = "iOS_XXLibrary/Classes/Exclude"
 
   # s.public_header_files = "Classes/**/*.h"
