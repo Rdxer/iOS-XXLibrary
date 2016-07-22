@@ -59,6 +59,11 @@ return [modelClazzName class];\
 /// @return  proxys
 +(NSArray *)mpsWithDicts:(NSArray *)dicts;
 
+/// 保存模型到数据库
+-(BOOL)saveToDB;
+/// 查询所有的模型
++(NSArray *)allModelProxy;
+
 @end
 
 

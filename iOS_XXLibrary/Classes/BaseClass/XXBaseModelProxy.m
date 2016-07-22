@@ -19,6 +19,20 @@
 
 @implementation XXBaseModelProxy
 
+-(BOOL)saveToDB{
+    __block BOOL res = false;
+    STDbQueue *dbQueue = [STDbQueue defaultQueue];
+    [dbQueue execute:^(STDb *db) {
+        res = [db insertDbObject:self.model];
+    }];
+    return res;
+}
++(NSArray *)allModelProxy{
+    // 取出所有用户
+    NSArray *models = [[self modelClass] allDbObjects];
+    return [self mpsWithModels:models];
+}
+
 +(Class)modelClass{
     return objc_getAssociatedObject(self, _cmd);
 }

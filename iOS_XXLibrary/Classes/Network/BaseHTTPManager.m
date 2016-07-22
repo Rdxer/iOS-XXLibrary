@@ -79,57 +79,97 @@
 }
 
 #pragma mark -
-
-
-
-//
-//- (NSURLSessionDataTask *)POST:(NSString *)URLString
-//                    parameters:(nullable id)parameters
-//     constructingBodyWithBlock:(nullable void (^)(id<AFMultipartFormData> _Nonnull))block
-//                       success:(nullable void (^)(NSURLSessionDataTask * _Nonnull, id _Nullable))success
-//                       failure:(nullable void (^)(NSURLSessionDataTask * _Nullable, NSError * _Nonnull))failure
-//{
-//    return [self POST:URLString parameters:parameters constructingBodyWithBlock:block progress:nil success:success failure:failure];
-//}
-//
-//- (NSURLSessionDataTask *)POST:(NSString *)URLString
-//                    parameters:(id)parameters
-//     constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
-//                      progress:(nullable void (^)(NSProgress * _Nonnull))uploadProgress
-//                       success:(void (^)(NSURLSessionDataTask *task, id responseObject))success
-//                       failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
-//{
-//    NSError *serializationError = nil;
-//    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:@"POST" URLString:[[NSURL URLWithString:URLString relativeToURL:self.baseURL] absoluteString] parameters:parameters constructingBodyWithBlock:block error:&serializationError];
-//    if (serializationError) {
-//        if (failure) {
-//#pragma clang diagnostic push
-//#pragma clang diagnostic ignored "-Wgnu"
-//            dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
-//                failure(nil, serializationError);
-//            });
-//#pragma clang diagnostic pop
-//        }
-//        
-//        return nil;
-//    }
-//    
-//    __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
-//        if (error) {
-//            if (failure) {
-//                failure(task, error);
-//            }
-//        } else {
-//            if (success) {
-//                success(task, responseObject);
-//            }
-//        }
-//    }];
-//    
-//    [task resume];
-//    
-//    return task;
-//}
+- (NSURLSessionDataTask *)dataTaskWithHTTPUrlInfo:(XXURLInfo *)urlInfo
+                                       parameters:(id)parameters
+                                      netdelegate:(XXNetworkDelegate *)netdelegate
+                        constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                                         progress:(nullable void (^)(NSProgress * _Nonnull))uploadProgress
+                                          success:(void (^)(NSURLSessionDataTask *task, id responseObject,id target))success
+                                          dataerr:(void (^)(NSURLSessionDataTask *task, id responseObject,XXError *error))dataerr
+                                          failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure
+{
+    NSError *serializationError = nil;
+    // 1. 时间戳
+    NSString *dataStamp = [[NSDate date] dateStamp];
+    
+    // 2. 处理参数
+    netdelegate.processParames(&parameters,dataStamp,&serializationError,urlInfo);
+    if(serializationError){
+        if (failure) {
+            dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                printE(@"<1>发送请求错误..%@",serializationError);
+                failure(nil, serializationError);
+            });
+        }
+        return nil;
+    }
+    
+    // 3. 生成绝对的 URL
+    NSString *absUrl = [urlInfo generateAbsoluteStringWithBaseURL:self.baseURL parameter:&parameters error:&serializationError];
+    
+    if(serializationError){
+        if (failure) {
+            dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                printE(@"<2>发送请求错误..%@",serializationError);
+                failure(nil, serializationError);
+            });
+        }
+        return nil;
+    }
+    
+    // 4. 生成 请求
+    NSMutableURLRequest *request = [self.requestSerializer multipartFormRequestWithMethod:urlInfo.method URLString:absUrl parameters:parameters constructingBodyWithBlock:block error:&serializationError];
+    
+    // 5. 刷新 请求头
+    netdelegate.processRequestHeader(&parameters,dataStamp,request,&serializationError,urlInfo);
+    
+    if (serializationError) {
+        if (failure) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wgnu"
+            dispatch_async(self.completionQueue ?: dispatch_get_main_queue(), ^{
+                failure(nil, serializationError);
+            });
+#pragma clang diagnostic pop
+        }
+        
+        return nil;
+    }
+    
+    __block NSURLSessionDataTask *task = [self uploadTaskWithStreamedRequest:request progress:uploadProgress completionHandler:^(NSURLResponse * __unused response, id responseObject, NSError *error) {
+        if (error) {
+            if (failure) {
+                dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                    printE(@"<4>发送请求错误..%@",error);
+                    failure(task, error);
+                });
+            }
+        } else {
+            XXError *serializationError = nil;
+            id target = netdelegate.parseResponse(responseObject,&serializationError,task);
+            if (serializationError) {
+                if (dataerr) {
+                    dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                        printW(@"请求失败~..%@",serializationError);
+                        dataerr(task, responseObject,serializationError);
+                    });
+                }
+                return ;
+            }
+            if (success) {
+                dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
+                    success(task, responseObject,target);
+                });
+                return;
+            }
+        }
+        
+    }];
+    
+    [task resume];
+    
+    return task;
+}
 
 - (NSURLSessionDataTask *)doTaskUrlInfo:(XXURLInfo *)urlInfo
                              parameters:(id)parameters

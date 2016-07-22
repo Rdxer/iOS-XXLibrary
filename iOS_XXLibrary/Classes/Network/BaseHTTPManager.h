@@ -116,4 +116,25 @@
                                 dataerr:(void (^)(NSURLSessionDataTask *task, id responseObject,XXError *error))dataerr
                                 failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
 
+///  创建一个 上传文件的 dataTask，并且开始请求
+///
+///  @param urlInfo          url 信息，包括 url 路径，谓词（请求方法）
+///  @param parameters       参数
+///  @param netdelegate      网络代理对象
+///  @param constructingBodyWithBlock 拼接文件
+///  @param uploadProgress   上传进度
+///  @param success          成功回调
+///  @param dataerr          服务器返回数据解析失败回调
+///  @param failure          网络错误等等回调
+///
+///  @return 创建并且已经开始的 数据任务。
+- (NSURLSessionDataTask *)dataTaskWithHTTPUrlInfo:(XXURLInfo *)urlInfo
+                                       parameters:(id)parameters
+                                      netdelegate:(XXNetworkDelegate *)netdelegate
+                        constructingBodyWithBlock:(void (^)(id <AFMultipartFormData> formData))block
+                                         progress:(nullable void (^)(NSProgress * _Nonnull))uploadProgress
+                                          success:(void (^)(NSURLSessionDataTask *task, id responseObject,id target))success
+                                          dataerr:(void (^)(NSURLSessionDataTask *task, id responseObject,XXError *error))dataerr
+                                          failure:(void (^)(NSURLSessionDataTask *task, NSError *error))failure;
+
 @end
