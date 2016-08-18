@@ -35,4 +35,8 @@
     return [self trim:@" "];
 }
 
+-(BOOL)notEmpty{
+    return self.length > 0 && self.trimWithSpace.length > 0;
+}
+
 @end
