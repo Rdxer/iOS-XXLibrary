@@ -16,4 +16,7 @@
 /// 去除两头的空格
 -(NSString *)trimWithSpace;
 
+/// 返回 非 0  表示 字符串长度 > 0 字符串去掉空格之后的长度 > 0 并且字符串不为空
+-(BOOL)notEmpty;
+
 @end
