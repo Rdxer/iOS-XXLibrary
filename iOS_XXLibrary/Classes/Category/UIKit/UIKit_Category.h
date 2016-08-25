@@ -22,5 +22,6 @@
 #import "UITextField+leftSpace.h"
 #import "UIView+cuttingLine.h"
 #import "UIView+Frame.h"
+#import "UIImage+XX_Exntension.h"
 
 #endif /* UIKit_Category_h */
