@@ -60,10 +60,11 @@ return [modelClazzName class];\
 +(NSArray *)mpsWithDicts:(NSArray *)dicts;
 
 /// 保存模型到数据库
--(BOOL)saveToDB;
-/// 查询所有的模型
+-(BOOL)insertToDb;
+/// 查询所有的模型 从数据路
 +(NSArray *)allModelProxy;
-
+-(BOOL)replaceToDb;
+-(BOOL)removeFromDb;
 @end
 
 

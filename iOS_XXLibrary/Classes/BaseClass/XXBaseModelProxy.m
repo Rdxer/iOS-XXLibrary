@@ -19,7 +19,7 @@
 
 @implementation XXBaseModelProxy
 
--(BOOL)saveToDB{
+-(BOOL)insertToDb{
     __block BOOL res = false;
     STDbQueue *dbQueue = [STDbQueue defaultQueue];
     [dbQueue execute:^(STDb *db) {
@@ -27,6 +27,24 @@
     }];
     return res;
 }
+-(BOOL)replaceToDb{
+    __block BOOL res = false;
+    STDbQueue *dbQueue = [STDbQueue defaultQueue];
+    [dbQueue execute:^(STDb *db) {
+        res = [db replaceDbObject:self.model];
+    }];
+    return res;
+}
+-(BOOL)removeFromDb{
+    __block BOOL res = false;
+    STDbQueue *dbQueue = [STDbQueue defaultQueue];
+    [dbQueue execute:^(STDb *db) {
+        res = [self.model removeFromDb];
+    }];
+    return res;
+}
+
+
 +(NSArray *)allModelProxy{
     // 取出所有用户
     NSArray *models = [[self modelClass] allDbObjects];
