@@ -65,14 +65,22 @@
     for (NSDictionary *dict in dicts) {
         [arrrayM addObject:[self modelWithDict:dict]];
     }
-
+    
     return arrrayM;
 }
 
 -(void)setValue:(id)value forUndefinedKey:(NSString *)key{
-    if ([XXBaseModel convertKeys][key]) {
-        [self setValue:value forKey:[XXBaseModel convertKeys][key]];
+    if ([[self class] convertKeys][key]) {
+        [self setValue:value forKey:[[self class] convertKeys][key]];
     }
+}
+
+-(void)setValue:(id)value forKey:(nonnull NSString *)key{
+    if ([[self class] convertKeys][key]) {
+        [super setValue:value forKey:[[self class] convertKeys][key]];
+        return;
+    }
+    [super setValue:value forKey:key];
 }
 
 +(NSDictionary *)convertKeys{
@@ -89,16 +97,16 @@
     return [[super description] stringByAppendingString:[self yy_modelToJSONString]];
 }
 //+(instancetype)modelWithJSONString:(NSString *)jsonStr{
-//    
+//
 //    NSError *error = nil;
-//    
+//
 //    id result = [NSJSONSerialization JSONObjectWithData:[jsonStr dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&error];
-//    
+//
 //    if (result == nil || [result isKindOfClass:[NSDictionary class]] == NO) {
 //        printE(@"此 JSONString 不是 字典的 JSON 字符串 %@, error: %@", jsonStr, error);
 //        return nil;
 //    }
-//    
+//
 //    return [self modelWithDict:result];
 //}
 
