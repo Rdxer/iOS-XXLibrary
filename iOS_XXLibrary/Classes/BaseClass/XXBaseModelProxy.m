@@ -65,7 +65,7 @@
         return clazz;
     }
     
-    NSString *clazzName = [NSStringFromClass(self) stringByReplacingOccurrencesOfString:@"" withString:@"Proxy"];
+    NSString *clazzName = [NSStringFromClass(self) stringByReplacingOccurrencesOfString:@"Proxy" withString:@""];
     clazz = NSClassFromString(clazzName);
     
     if ([clazz isSubclassOfClass:[XXBaseModel class]]) {

@@ -269,8 +269,11 @@
                            if (error) {
                                if (failure) {
                                    dispatch_async(self.completionCallBackQueue ?: dispatch_get_main_queue(), ^{
-                                        printE(@"<4>发送请求错误..%@",error);
-                                        failure(dataTask, error);
+                                       printE(@"<4>发送请求错误..%@",error);
+                                       NSString *message = [[NSString alloc]initWithData:[[error.userInfo[@"NSUnderlyingError"] userInfo]objectForKey:@"com.alamofire.serialization.response.error.data"] encoding:NSUTF8StringEncoding];
+                                       printE(@"data:%@",message);
+                                       
+                                       failure(dataTask, error);
                                    });
                                }
                            } else {
